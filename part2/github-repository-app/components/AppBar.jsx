@@ -1,0 +1,25 @@
+import { View, StyleSheet, Pressable, Text } from "react-native";
+import Constants from "expo-constants";
+import AppBarTab from "./AppBarTab";
+import theme from "../theme";
+
+const styles = StyleSheet.create({
+  container: {
+    paddingTop: Constants.statusBarHeight,
+    backgroundColor: theme.bgColor.tabs,
+    width: "100%",
+    padding: "12",
+  },
+});
+
+const AppBar = () => {
+  return (
+    <View style={styles.container}>
+      <Pressable>
+        <AppBarTab name={"Repositories"} />
+      </Pressable>
+    </View>
+  );
+};
+
+export default AppBar;
