@@ -1,28 +1,93 @@
-import { View, Text } from "react-native";
-import React from "react";
+import { View, Text, Image, StyleSheet } from "react-native";
+import theme from "../theme";
 
-// {
-//     id: string;
-//     fullName: string;
-//     description: string;
-//     language: string;
-//     forksCount: number;
-//     stargazersCount: number;
-//     ratingAverage: number;
-//     reviewCount: number;
-//     ownerAvatarUrl: string;
-// }
+const styles = StyleSheet.create({
+  card: {
+    padding: 16,
+    gap: 10,
+    flexDirection: "column",
+    backgroundColor: theme.bgColors.repoItem,
+    width: "100%",
+  },
+  cardContent: {
+    display: "flex",
+    gap: 20,
+    flexDirection: "row",
+  },
+  cardImage: {
+    width: 50,
+    height: 50,
+  },
+  cardMainContent: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "baseline",
+  },
+  cardTitle: {
+    fontWeight: "800",
+  },
+  cardDescription: {
+    color: "gray",
+  },
+  cardLanguage: {
+    backgroundColor: theme.bgColors.repoTag,
+    color: "white",
+    borderRadius: 3,
+    padding: 5,
+  },
+  cardStats: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
+  cardStatItem: {
+    alignItems: "center",
+  },
+  cardStatNumber: {
+    fontWeight: "800",
+  },
+});
+
+const formatCount = (count) => {
+  if (count >= 1000) {
+    return (count / 1000).toFixed(1) + "k";
+  }
+  return count;
+};
 
 const RepositoryItem = ({ item }) => {
   return (
-    <View>
-      <Text>Full name: {item.fullName}</Text>
-      <Text>Description: {item.description}</Text>
-      <Text>Language: {item.language}</Text>
-      <Text>Stars: {item.stargazersCount}</Text>
-      <Text>Forks: {item.forksCount}</Text>
-      <Text>Reviews: {item.reviewCount}</Text>
-      <Text>Rating: {item.ratingAverage}</Text>
+    <View style={styles.card}>
+      <View style={styles.cardContent}>
+        <Image source={{ uri: item.ownerAvatarUrl }} style={styles.cardImage} />
+        <View style={styles.cardMainContent}>
+          <Text style={styles.cardTitle}>{item.fullName}</Text>
+          <Text style={styles.cardDescription}>{item.description}</Text>
+          <Text style={styles.cardLanguage}>{item.language}</Text>
+        </View>
+      </View>
+      <View style={styles.cardStats}>
+        <View style={styles.cardStatItem}>
+          <Text style={styles.cardStatNumber}>
+            {formatCount(item.stargazersCount)}
+          </Text>
+          <Text>Stars</Text>
+        </View>
+        <View style={styles.cardStatItem}>
+          <Text style={styles.cardStatNumber}>
+            {formatCount(item.forksCount)}
+          </Text>
+          <Text>Forks</Text>
+        </View>
+        <View style={styles.cardStatItem}>
+          <Text style={styles.cardStatNumber}>{item.reviewCount}</Text>
+          <Text>Reviews</Text>
+        </View>
+        <View style={styles.cardStatItem}>
+          <Text style={styles.cardStatNumber}>{item.ratingAverage}</Text>
+          <Text>Rating</Text>
+        </View>
+      </View>
     </View>
   );
 };
