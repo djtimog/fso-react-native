@@ -1,4 +1,4 @@
-import { Text, Pressable, StyleSheet } from "react-native";
+import { Text, StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
   text: {
@@ -10,9 +10,5 @@ const styles = StyleSheet.create({
 });
 
 export default function AppBarTab({ name }) {
-  return (
-    <Pressable>
-      <Text style={styles.text}>{name}</Text>
-    </Pressable>
-  );
+  return <Text style={styles.text}>{name}</Text>;
 }
