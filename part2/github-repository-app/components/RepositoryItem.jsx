@@ -25,15 +25,18 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontWeight: "800",
+    fontFamily: theme.font.main,
   },
   cardDescription: {
     color: "gray",
+    fontFamily: theme.font.main,
   },
   cardLanguage: {
     backgroundColor: theme.bgColors.repoTag,
     color: "white",
     borderRadius: 3,
     padding: 5,
+    fontFamily: theme.font.main,
   },
   cardStats: {
     display: "flex",
@@ -45,6 +48,7 @@ const styles = StyleSheet.create({
   },
   cardStatNumber: {
     fontWeight: "800",
+    fontFamily: theme.font.main,
   },
 });
 
