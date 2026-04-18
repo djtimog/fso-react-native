@@ -1,8 +1,11 @@
-import { View, StyleSheet, ScrollView } from "react-native";
+import { View, StyleSheet, ScrollView, Pressable, Text } from "react-native";
 import Constants from "expo-constants";
 import AppBarTab from "./AppBarTab";
 import theme from "../theme";
 import { Link } from "react-router-native";
+import useAuthStorage from "../hooks/useAuthStorage";
+import { useApolloClient, useQuery } from "@apollo/client";
+import { GET_ME } from "../graphql/queries";
 
 const styles = StyleSheet.create({
   container: {
@@ -16,20 +19,25 @@ const styles = StyleSheet.create({
     gap: 20,
     alignItems: "center",
   },
+  signOutText: {
+    color: "white",
+    fontWeight: "600",
+    textAlign: "left",
+    fontSize: 18,
+  },
 });
 
-const tabs = [
-  {
-    name: "Repositories",
-    link: "/",
-  },
-  {
-    name: "Sign In",
-    link: "/sign-in",
-  },
-];
-
 const AppBar = () => {
+  const query = useQuery(GET_ME);
+  const authStorage = useAuthStorage();
+  const apolloClient = useApolloClient();
+  const isLogIn = query.data?.me;
+
+  const signOut = async () => {
+    await authStorage.removeAccessToken();
+    await apolloClient.resetStore();
+  };
+
   return (
     <View>
       <ScrollView
@@ -37,11 +45,19 @@ const AppBar = () => {
         style={styles.container}
         contentContainerStyle={styles.content}
       >
-        {tabs.map((tab) => (
-          <Link key={tab.name} to={tab.link}>
-            <AppBarTab name={tab.name} />
+        <Link to={"/"}>
+          <AppBarTab name={"Repositories"} />
+        </Link>
+
+        {!isLogIn ? (
+          <Link to={"/sign-in"}>
+            <AppBarTab name={"Sign In"} />
           </Link>
-        ))}
+        ) : (
+          <Pressable onPress={signOut}>
+            <Text style={styles.signOutText}>Sign Out</Text>
+          </Pressable>
+        )}
       </ScrollView>
     </View>
   );

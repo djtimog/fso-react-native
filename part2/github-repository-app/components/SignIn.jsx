@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { useFormik } from "formik";
 import theme from "../theme";
 import * as yup from "yup";
-import useSignIn from "../hooks/useSign";
+import useSignIn from "../hooks/useSignIn";
 import { useNavigate } from "react-router";
 
 const validationSchema = yup.object().shape({
