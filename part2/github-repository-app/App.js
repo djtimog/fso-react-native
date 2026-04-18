@@ -3,19 +3,21 @@ import { ApolloProvider } from "@apollo/client";
 import { NativeRouter } from "react-router-native";
 import Main from "./components/Main";
 import createApolloClient from "./utils/apolloClient";
-import Constants from "expo-constants";
+import AuthStorage from "./utils/authStorage";
+import AuthStorageContext from "./contexts/AuthStorageContext";
+
+const authStorage = new AuthStorage();
+const apolloClient = createApolloClient(authStorage);
 
 export default function App() {
-  const uri =
-    Constants.expoConfig?.extra?.apolloUri ?? "http://172.20.10.3:4000/graphql";
-  const apolloClient = createApolloClient(uri);
-
   return (
     <ApolloProvider client={apolloClient}>
-      <NativeRouter>
-        <Main />
-        <StatusBar style="auto" />
-      </NativeRouter>
+      <AuthStorageContext.Provider value={authStorage}>
+        <NativeRouter>
+          <Main />
+          <StatusBar style="auto" />
+        </NativeRouter>
+      </AuthStorageContext.Provider>
     </ApolloProvider>
   );
 }
