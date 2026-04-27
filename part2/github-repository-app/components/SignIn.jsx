@@ -60,6 +60,12 @@ const SignIn = () => {
     }
   };
 
+  return <SignInForm onSubmit={onSubmit} />;
+};
+
+export default SignIn;
+
+export const SignInForm = ({ onSubmit }) => {
   const formik = useFormik({
     initialValues: {
       username: "",
@@ -98,5 +104,3 @@ const SignIn = () => {
     </View>
   );
 };
-
-export default SignIn;
