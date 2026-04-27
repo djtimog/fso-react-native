@@ -4,6 +4,7 @@ import AppBar from "./AppBar";
 import { Route, Routes, Navigate } from "react-router-native";
 import SignIn from "./SignIn";
 import theme from "../theme";
+import RepositoryPage from "./RepositoryPage";
 
 export default function Main() {
   return (
@@ -12,6 +13,7 @@ export default function Main() {
       <Routes>
         <Route path="/" element={<RepositoryList />} />
         <Route path="/sign-in" element={<SignIn />} />
+        <Route path="/repository/:id" element={<RepositoryPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </View>

@@ -1,5 +1,6 @@
-import { View, Text, Image, StyleSheet } from "react-native";
+import { View, Text, Image, StyleSheet, Pressable } from "react-native";
 import theme from "../theme";
+import * as Linking from "expo-linking";
 
 const styles = StyleSheet.create({
   card: {
@@ -50,6 +51,18 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     fontFamily: theme.font.main,
   },
+  urlBtn: {
+    backgroundColor: theme.colors.primary,
+    padding: 10,
+    borderRadius: 5,
+  },
+  urlBtnText: {
+    color: theme.colors.button,
+    fontWeight: "800",
+    fontFamily: theme.font.main,
+    fontSize: 18,
+    textAlign: "center",
+  },
 });
 
 const formatCount = (count) => {
@@ -59,7 +72,7 @@ const formatCount = (count) => {
   return count;
 };
 
-const RepositoryItem = ({ item }) => {
+const RepositoryItem = ({ item, showUrl = false }) => {
   return (
     <View style={styles.card} testID="repositoryItem">
       <View style={styles.cardContent}>
@@ -92,6 +105,14 @@ const RepositoryItem = ({ item }) => {
           <Text>Rating</Text>
         </View>
       </View>
+      {showUrl && (
+        <Pressable
+          style={styles.urlBtn}
+          onPress={() => Linking.openURL(item.url)}
+        >
+          <Text style={styles.urlBtnText}>Open in Github</Text>
+        </Pressable>
+      )}
     </View>
   );
 };
