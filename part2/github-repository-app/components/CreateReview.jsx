@@ -1,4 +1,4 @@
-import { View, Text, TextInput, Pressable, StyleSheet } from "react-native";
+import { View, Text, TextInput, Pressable } from "react-native";
 import React from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -6,6 +6,7 @@ import { useMutation } from "@apollo/client";
 import { useNavigate } from "react-router-native";
 import { CREATE_REVIEW } from "../graphql/mutations";
 import useCreateReview from "../hooks/useCreateReview";
+import { mutateStyles } from "../lib/mutationStyles";
 
 const validationSchema = yup.object().shape({
   ownerName: yup
@@ -23,39 +24,6 @@ const validationSchema = yup.object().shape({
     .min(0, "Rating must be between 0 and 100")
     .max(100, "Rating must be between 0 and 100"),
   review: yup.string().min(10, "Review must be at least 10 characters"),
-});
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-    backgroundColor: "#fff",
-    gap: 4,
-  },
-  input: (hasError) => ({
-    borderWidth: 1,
-    borderColor: hasError ? "#d73a4a" : "#ccc",
-    borderRadius: 4,
-    padding: 12,
-    fontSize: 16,
-    color: "#333",
-  }),
-  errorText: {
-    color: "#d73a4a",
-    fontSize: 13,
-    marginBottom: 8,
-  },
-  button: {
-    backgroundColor: "#3d5afe",
-    padding: 16,
-    borderRadius: 4,
-    alignItems: "center",
-    marginTop: 8,
-  },
-  buttonText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 16,
-  },
 });
 
 const CreateReview = () => {
@@ -90,18 +58,18 @@ const CreateReview = () => {
   });
 
   return (
-    <View style={styles.container}>
+    <View style={mutateStyles.container}>
       <TextInput
         placeholder="Repository owner name"
         value={formik.values.ownerName}
         onChangeText={formik.handleChange("ownerName")}
         onBlur={formik.handleBlur("ownerName")}
-        style={styles.input(
+        style={mutateStyles.input(
           formik.touched.ownerName && formik.errors.ownerName,
         )}
       />
       {formik.touched.ownerName && formik.errors.ownerName && (
-        <Text style={styles.errorText}>{formik.errors.ownerName}</Text>
+        <Text style={mutateStyles.errorText}>{formik.errors.ownerName}</Text>
       )}
 
       <TextInput
@@ -109,12 +77,14 @@ const CreateReview = () => {
         value={formik.values.repositoryName}
         onChangeText={formik.handleChange("repositoryName")}
         onBlur={formik.handleBlur("repositoryName")}
-        style={styles.input(
+        style={mutateStyles.input(
           formik.touched.repositoryName && formik.errors.repositoryName,
         )}
       />
       {formik.touched.repositoryName && formik.errors.repositoryName && (
-        <Text style={styles.errorText}>{formik.errors.repositoryName}</Text>
+        <Text style={mutateStyles.errorText}>
+          {formik.errors.repositoryName}
+        </Text>
       )}
 
       <TextInput
@@ -123,10 +93,12 @@ const CreateReview = () => {
         onChangeText={formik.handleChange("rating")}
         onBlur={formik.handleBlur("rating")}
         keyboardType="numeric"
-        style={styles.input(formik.touched.rating && formik.errors.rating)}
+        style={mutateStyles.input(
+          formik.touched.rating && formik.errors.rating,
+        )}
       />
       {formik.touched.rating && formik.errors.rating && (
-        <Text style={styles.errorText}>{formik.errors.rating}</Text>
+        <Text style={mutateStyles.errorText}>{formik.errors.rating}</Text>
       )}
 
       <TextInput
@@ -136,16 +108,16 @@ const CreateReview = () => {
         onBlur={formik.handleBlur("review")}
         multiline
         style={[
-          styles.input(formik.touched.review && formik.errors.review),
+          mutateStyles.input(formik.touched.review && formik.errors.review),
           { minHeight: 80 },
         ]}
       />
       {formik.touched.review && formik.errors.review && (
-        <Text style={styles.errorText}>{formik.errors.review}</Text>
+        <Text style={mutateStyles.errorText}>{formik.errors.review}</Text>
       )}
 
-      <Pressable style={styles.button} onPress={formik.handleSubmit}>
-        <Text style={styles.buttonText}>Create a review</Text>
+      <Pressable style={mutateStyles.button} onPress={formik.handleSubmit}>
+        <Text style={mutateStyles.buttonText}>Create a review</Text>
       </Pressable>
     </View>
   );

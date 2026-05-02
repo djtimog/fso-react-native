@@ -6,7 +6,7 @@ import { useQuery } from "@apollo/client";
 import { GET_REPOSITORY } from "../graphql/queries";
 import { ItemSeparator } from "./RepositoryList";
 import { format } from "date-fns";
-import theme from "../theme";
+import theme from "../lib/theme";
 
 export default function RepositoryPage() {
   const { id } = useParams();

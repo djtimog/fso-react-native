@@ -1,5 +1,5 @@
 import { View, Text, Image, StyleSheet, Pressable } from "react-native";
-import theme from "../theme";
+import theme from "../lib/theme";
 import * as Linking from "expo-linking";
 
 const styles = StyleSheet.create({

@@ -4,9 +4,9 @@ export const RepositoryFragment = gql`
   fragment RepositoryFragment on Repository {
     id
     language
-    name
+    fullName
+    description
     ownerAvatarUrl
-    ownerName
     ratingAverage
     reviewCount
     stargazersCount

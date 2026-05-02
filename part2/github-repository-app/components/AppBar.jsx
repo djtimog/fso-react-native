@@ -1,7 +1,7 @@
 import { View, StyleSheet, ScrollView, Pressable, Text } from "react-native";
 import Constants from "expo-constants";
 import AppBarTab from "./AppBarTab";
-import theme from "../theme";
+import theme from "../lib/theme";
 import { Link } from "react-router-native";
 import useAuthStorage from "../hooks/useAuthStorage";
 import { useApolloClient, useQuery } from "@apollo/client";
@@ -50,9 +50,14 @@ const AppBar = () => {
         </Link>
 
         {!isLogIn ? (
-          <Link to={"/sign-in"}>
-            <AppBarTab name={"Sign In"} />
-          </Link>
+          <>
+            <Link to={"/sign-in"}>
+              <AppBarTab name={"Sign In"} />
+            </Link>
+            <Link to={"/sign-up"}>
+              <AppBarTab name={"Sign Up"} />
+            </Link>
+          </>
         ) : (
           <>
             <Link to={"/create-review"}>

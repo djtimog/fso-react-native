@@ -2,9 +2,9 @@ import { Pressable, Text, TextInput, View } from "react-native";
 import { useFormik } from "formik";
 import theme from "../lib/theme";
 import * as yup from "yup";
-import useSignIn from "../hooks/useSignIn";
 import { useNavigate } from "react-router";
 import { mutateStyles } from "../lib/mutationStyles";
+import useSignUp from "../hooks/useSignUp";
 
 const validationSchema = yup.object().shape({
   username: yup
@@ -15,33 +15,38 @@ const validationSchema = yup.object().shape({
     .string()
     .required()
     .min(8, "password must be at least 8 characters"),
+  confirmPassword: yup
+    .string()
+    .required()
+    .oneOf([yup.ref("password"), null], "Passwords must match"),
 });
 
-const SignIn = () => {
-  const [signIn] = useSignIn();
+const SignUp = () => {
+  const [signUp] = useSignUp(); //
   const navigate = useNavigate();
 
   const onSubmit = async (values) => {
     const { username, password } = values;
 
     try {
-      const data = await signIn({ username, password });
+      const data = await signUp({ username, password });
       navigate("/");
     } catch (e) {
       console.log(e);
     }
   };
 
-  return <SignInForm onSubmit={onSubmit} />;
+  return <SignUpForm onSubmit={onSubmit} />;
 };
 
-export default SignIn;
+export default SignUp;
 
-export const SignInForm = ({ onSubmit }) => {
+export const SignUpForm = ({ onSubmit }) => {
   const formik = useFormik({
     initialValues: {
       username: "",
       password: "",
+      confirmPassword: "",
     },
     validationSchema,
     onSubmit,
@@ -74,8 +79,21 @@ export const SignInForm = ({ onSubmit }) => {
       {formik.touched.password && formik.errors.password && (
         <Text style={mutateStyles.error}>{formik.errors.password}</Text>
       )}
+      <TextInput
+        placeholder="Confirm Password"
+        value={formik.values.confirmPassword}
+        onChangeText={formik.handleChange("confirmPassword")}
+        onBlur={formik.handleBlur("confirmPassword")}
+        style={mutateStyles.input(
+          formik.touched.confirmPassword && formik.errors.confirmPassword,
+        )}
+        secureTextEntry
+      />
+      {formik.touched.confirmPassword && formik.errors.confirmPassword && (
+        <Text style={mutateStyles.error}>{formik.errors.confirmPassword}</Text>
+      )}
       <Pressable onPress={formik.handleSubmit} style={mutateStyles.button}>
-        <Text style={mutateStyles.buttonText}>Sign In</Text>
+        <Text style={mutateStyles.buttonText}>Sign Up</Text>
       </Pressable>
     </View>
   );
