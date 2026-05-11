@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const ReviewItem = ({ review }) => {
+export const ReviewItem = ({ review, currentUser = false }) => {
   const date = format(new Date(review.createdAt), "dd MMM yyyy");
 
   return (
@@ -70,7 +70,9 @@ const ReviewItem = ({ review }) => {
       </View>
       <View style={styles.miniContainer}>
         <View>
-          <Text style={styles.name}>{review.user.username}</Text>
+          <Text style={styles.name}>
+            {currentUser ? review.repository.fullName : review.user.username}
+          </Text>
           <Text>{date}</Text>
         </View>
         <View>

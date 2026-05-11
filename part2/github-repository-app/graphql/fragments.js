@@ -16,3 +16,20 @@ export const RepositoryFragment = gql`
     forksCount
   }
 `;
+
+export const ReviewFragment = gql`
+  fragment ReviewFragment on Review {
+    id
+    text
+    rating
+    createdAt
+    user {
+      id
+      username
+    }
+    repository {
+      id
+      fullName
+    }
+  }
+`;

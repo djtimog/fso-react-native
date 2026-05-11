@@ -7,6 +7,7 @@ import theme from "../lib/theme";
 import RepositoryPage from "./RepositoryPage";
 import CreateReview from "./CreateReview";
 import SignUp from "./SignUp";
+import MyReviews from "./MyReviews";
 
 export default function Main() {
   return (
@@ -18,6 +19,7 @@ export default function Main() {
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/repository/:id" element={<RepositoryPage />} />
         <Route path="/create-review" element={<CreateReview />} />
+        <Route path="/my-reviews" element={<MyReviews />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </View>

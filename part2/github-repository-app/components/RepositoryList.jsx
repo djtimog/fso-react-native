@@ -1,21 +1,55 @@
-import { FlatList, View, StyleSheet, Text, Pressable } from "react-native";
-import { useState } from "react";
+import {
+  FlatList,
+  View,
+  StyleSheet,
+  Text,
+  Pressable,
+  TextInput,
+} from "react-native";
+import { useMemo, useState } from "react";
 import { Picker } from "@react-native-picker/picker";
 import { useNavigate } from "react-router-native";
+import { useDebounce } from "use-debounce";
+
 import RepositoryItem from "./RepositoryItem";
 import useRepositories from "../hooks/useRepositories";
 import theme from "../lib/theme";
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+
   separator: {
     height: 10,
   },
-  pickerContainer: {
+
+  header: {
     backgroundColor: theme.bgColors.main,
     padding: 10,
+    gap: 10,
   },
+
+  searchInput: {
+    backgroundColor: "white",
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+
   picker: {
     color: theme.colors.textPrimary,
+    backgroundColor: "white",
+    borderRadius: 8,
+  },
+  pickerItem: {
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+  },
+
+  loading: {
+    padding: 20,
+    textAlign: "center",
   },
 });
 
@@ -39,43 +73,68 @@ const ORDER_OPTIONS = [
 
 export const ItemSeparator = () => <View style={styles.separator} />;
 
-const OrderPicker = ({ selected, onSelect }) => (
-  <View style={styles.pickerContainer}>
-    <Picker
-      selectedValue={selected}
-      onValueChange={onSelect}
-      style={styles.picker}
-    >
-      {ORDER_OPTIONS.map((opt) => (
-        <Picker.Item key={opt.label} label={opt.label} value={opt.label} />
-      ))}
-    </Picker>
-  </View>
-);
+const ListHeader = ({
+  searchQuery,
+  setSearchQuery,
+  orderLabel,
+  setOrderLabel,
+}) => {
+  return (
+    <View style={styles.header}>
+      <TextInput
+        placeholder="Search repositories"
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+        style={styles.searchInput}
+      />
+
+      <Picker
+        selectedValue={orderLabel}
+        onValueChange={(value) => setOrderLabel(value)}
+        style={styles.picker}
+      >
+        {ORDER_OPTIONS.map((option) => (
+          <Picker.Item
+            key={option.label}
+            label={option.label}
+            value={option.label}
+            style={styles.pickerItem}
+          />
+        ))}
+      </Picker>
+    </View>
+  );
+};
 
 export const RepositoryListContainer = ({
   repositories,
   orderLabel,
-  onOrderChange,
+  setOrderLabel,
+  searchQuery,
+  setSearchQuery,
 }) => {
   const navigate = useNavigate();
-  const repositoryNodes = repositories
-    ? repositories.edges.map((edge) => edge.node)
-    : [];
+
+  const repositoryNodes = repositories?.edges?.map((edge) => edge.node) ?? [];
 
   return (
     <FlatList
       data={repositoryNodes}
+      keyExtractor={(item) => item.id}
       ItemSeparatorComponent={ItemSeparator}
       ListHeaderComponent={
-        <OrderPicker selected={orderLabel} onSelect={onOrderChange} />
+        <ListHeader
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          orderLabel={orderLabel}
+          setOrderLabel={setOrderLabel}
+        />
       }
       renderItem={({ item }) => (
         <Pressable onPress={() => navigate(`/repository/${item.id}`)}>
           <RepositoryItem item={item} />
         </Pressable>
       )}
-      keyExtractor={(item) => item.id}
     />
   );
 };
@@ -83,25 +142,35 @@ export const RepositoryListContainer = ({
 const RepositoryList = () => {
   const [orderLabel, setOrderLabel] = useState(ORDER_OPTIONS[0].label);
 
-  const { orderBy, orderDirection } = ORDER_OPTIONS.find(
-    (opt) => opt.label === orderLabel,
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const [searchKeyword] = useDebounce(searchQuery, 500);
+
+  const selectedOrder = useMemo(
+    () => ORDER_OPTIONS.find((option) => option.label === orderLabel),
+    [orderLabel],
   );
 
   const { repositories, loading } = useRepositories({
-    orderBy,
-    orderDirection,
+    orderBy: selectedOrder.orderBy,
+    orderDirection: selectedOrder.orderDirection,
+    searchKeyword,
   });
 
   if (loading) {
-    return <Text>Loading...</Text>;
+    return <Text style={styles.loading}>Loading...</Text>;
   }
 
   return (
-    <RepositoryListContainer
-      repositories={repositories}
-      orderLabel={orderLabel}
-      onOrderChange={setOrderLabel}
-    />
+    <View style={styles.container}>
+      <RepositoryListContainer
+        repositories={repositories}
+        orderLabel={orderLabel}
+        setOrderLabel={setOrderLabel}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+      />
+    </View>
   );
 };
 

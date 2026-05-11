@@ -6,6 +6,7 @@ const styles = StyleSheet.create({
   card: {
     padding: 16,
     gap: 10,
+    marginBottom: 10,
     flexDirection: "column",
     backgroundColor: theme.bgColors.repoItem,
     width: "100%",
