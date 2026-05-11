@@ -112,6 +112,7 @@ export const RepositoryListContainer = ({
   setOrderLabel,
   searchQuery,
   setSearchQuery,
+  onEndReached,
 }) => {
   const navigate = useNavigate();
 
@@ -130,6 +131,8 @@ export const RepositoryListContainer = ({
           setOrderLabel={setOrderLabel}
         />
       }
+      onEndReached={onEndReached}
+      onEndReachedThreshold={0.5}
       renderItem={({ item }) => (
         <Pressable onPress={() => navigate(`/repository/${item.id}`)}>
           <RepositoryItem item={item} />
@@ -151,7 +154,8 @@ const RepositoryList = () => {
     [orderLabel],
   );
 
-  const { repositories, loading } = useRepositories({
+  const { repositories, loading, fetchMore } = useRepositories({
+    first: 8,
     orderBy: selectedOrder.orderBy,
     orderDirection: selectedOrder.orderDirection,
     searchKeyword,
@@ -169,6 +173,7 @@ const RepositoryList = () => {
         setOrderLabel={setOrderLabel}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
+        onEndReached={fetchMore}
       />
     </View>
   );

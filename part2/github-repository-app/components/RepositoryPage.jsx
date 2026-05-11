@@ -17,9 +17,26 @@ import theme from "../lib/theme";
 
 export default function RepositoryPage() {
   const { id } = useParams();
-  const { data, loading, error } = useQuery(GET_REPOSITORY, {
-    variables: { repositoryId: id },
+  const variables = { repositoryId: id, first: 5 };
+  const { data, loading, error, fetchMore } = useQuery(GET_REPOSITORY, {
+    variables,
   });
+
+  const handleFetchMore = () => {
+    const canFetchMore =
+      !loading && data?.repository.reviews.pageInfo.hasNextPage;
+
+    if (!canFetchMore) {
+      return;
+    }
+
+    fetchMore({
+      variables: {
+        after: data.repository.reviews.pageInfo.endCursor,
+        ...variables,
+      },
+    });
+  };
 
   if (loading || error) return <Text>Loading...</Text>;
   const reviews = data?.repository?.reviews?.edges.map((edge) => edge.node);
@@ -32,6 +49,8 @@ export default function RepositoryPage() {
       ListHeaderComponent={() => (
         <RepositoryItem item={data?.repository} showUrl />
       )}
+      onEndReached={handleFetchMore}
+      onEndReachedThreshold={0.5}
       ItemSeparatorComponent={ItemSeparator}
     />
   );

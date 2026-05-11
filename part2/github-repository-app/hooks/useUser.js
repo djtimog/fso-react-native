@@ -7,7 +7,12 @@ const useUser = () => {
     variables: { includeReviews: true },
   });
 
-  return { user: data?.me, loading, error, refetch };
+  return {
+    user: data?.me,
+    loading,
+    error,
+    refetch,
+  };
 };
 
 export default useUser;
