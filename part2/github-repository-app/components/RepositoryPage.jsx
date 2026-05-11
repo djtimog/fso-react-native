@@ -1,7 +1,14 @@
-import { View, Text, FlatList, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  Pressable,
+  Alert,
+} from "react-native";
 import React from "react";
 import RepositoryItem from "./RepositoryItem";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { useQuery } from "@apollo/client";
 import { GET_REPOSITORY } from "../graphql/queries";
 import { ItemSeparator } from "./RepositoryList";
@@ -32,10 +39,40 @@ export default function RepositoryPage() {
 
 const styles = StyleSheet.create({
   container: {
+    gap: 5,
+    backgroundColor: theme.bgColors.repoItem,
+  },
+  content: {
+    padding: 5,
+    flexDirection: "row",
+    gap: 10,
+  },
+  btnContainer: {
     flexDirection: "row",
     padding: 5,
     gap: 5,
-    backgroundColor: theme.bgColors.repoItem,
+  },
+  btn: {
+    backgroundColor: theme.colors.primary,
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    height: 50,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  delBtn: {
+    backgroundColor: theme.colors.error,
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    height: 50,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  btnText: {
+    color: theme.colors.button,
+    fontWeight: 700,
   },
   rating: {
     width: 50,
@@ -60,25 +97,56 @@ const styles = StyleSheet.create({
   },
 });
 
-export const ReviewItem = ({ review, currentUser = false }) => {
+export const ReviewItem = ({ review, currentUser = false, deleteReview }) => {
   const date = format(new Date(review.createdAt), "dd MMM yyyy");
+  const navigate = useNavigate();
+
+  const handleViewRepo = () => {
+    navigate(`/repository/${review.repository.id}`);
+  };
+
+  const handleDeleteReview = () =>
+    Alert.alert(
+      "Delete Review",
+      "Are you sure you want to delete this review?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        { text: "Delete", onPress: () => deleteReview(review.id) },
+      ],
+    );
 
   return (
     <View style={styles.container}>
-      <View style={styles.rating}>
-        <Text style={styles.ratingText}>{review.rating}</Text>
-      </View>
-      <View style={styles.miniContainer}>
-        <View>
-          <Text style={styles.name}>
-            {currentUser ? review.repository.fullName : review.user.username}
-          </Text>
-          <Text>{date}</Text>
+      <View style={styles.content}>
+        <View style={styles.rating}>
+          <Text style={styles.ratingText}>{review.rating}</Text>
         </View>
-        <View>
-          <Text>{review.text}</Text>
+        <View style={styles.miniContainer}>
+          <View>
+            <Text style={styles.name}>
+              {currentUser ? review.repository.fullName : review.user.username}
+            </Text>
+            <Text>{date}</Text>
+          </View>
+          <View>
+            <Text>{review.text}</Text>
+          </View>
         </View>
       </View>
+      {currentUser && (
+        <View style={styles.btnContainer}>
+          <Pressable style={styles.btn} onPress={handleViewRepo}>
+            <Text style={styles.btnText}>View repository</Text>
+          </Pressable>
+          <Pressable style={styles.delBtn} onPress={handleDeleteReview}>
+            <Text style={styles.btnText}>Delete review</Text>
+          </Pressable>
+        </View>
+      )}
     </View>
   );
 };
